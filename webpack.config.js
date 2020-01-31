@@ -7,7 +7,7 @@ module.exports = {
     output: {
         path: path.join(__dirname, "dist"),
         filename: "index.js",
-        library: "react-gsheets-timeline",
+        library: "ocrcc-chat-widget",
         libraryTarget: 'umd',
         publicPath: '/dist/',
         umdNamedDefine: true
@@ -51,7 +51,7 @@ module.exports = {
     } ,
     plugins: [
       new MiniCssExtractPlugin({
-        filename: 'timeline.css',
+        filename: 'chat.css',
       }),
       // new BundleAnalyzerPlugin()
     ],
