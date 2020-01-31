@@ -7,13 +7,15 @@ import Message from "./Message";
 
 import "./chat.scss"
 
-const matrixServerAddress = "https://matrix.rhok.space"
+const MATRIX_SERVER_ADDRESS = "https://matrix.rhok.space"
+const FACILITATOR_USERNAME = "@anonymouscat:rhok.space"
+const CHATROOM_NAME = "Support Chat"
 
 
 class ChatBox extends React.Component {
   constructor(props) {
     super(props)
-    const client = sdk.createClient(matrixServerAddress)
+    const client = sdk.createClient(MATRIX_SERVER_ADDRESS)
     this.state = {
       client: client,
       ready: false,
@@ -23,11 +25,44 @@ class ChatBox extends React.Component {
       messages: [],
       inputValue: "",
     }
+    this.chatboxInput = React.createRef();
+  }
+
+  leaveRoom = () => {
+    if (this.state.room_id) {
+      this.state.client.leave(this.state.room_id).then(data => {
+        console.log("Left room", data)
+      })
+    }
+  }
+
+  createRoom = () => {
+    return this.state.client.createRoom({
+      room_alias_name: `private-support-chat-${uuid()}`,
+      invite: [FACILITATOR_USERNAME], // TODO: create bot user to add
+      visibility: 'private',
+      name: CHATROOM_NAME
+    }).then(data => {
+      this.setState({ room_id: data.room_id })
+    })
+  }
+
+  sendMessage = () => {
+    const content = {
+      "body": this.state.inputValue,
+      "msgtype": "m.text"
+    };
+
+    this.state.client.sendEvent(this.state.room_id, "m.room.message", content, "").then((res) => {
+      this.setState({ inputValue: "" })
+      this.chatboxInput.current.focus()
+    }).catch((err) => {
+      console.log(err);
+    })
   }
 
   componentDidMount() {
     // empty registration request to get session
-    console.log("this.state", this.state)
     this.state.client.registerRequest({}).then(data => {
       console.log("Empty registration request to get session", data)
     }).catch(err => {
@@ -41,19 +76,19 @@ class ChatBox extends React.Component {
         username: username,
         x_show_msisdn: true,
       }).then(data => {
-        console.log("Registration data", data)
+        console.log("Registered user", data)
         this.setState({
           access_token: data.access_token,
           user_id: data.user_id,
           username: username,
           client: sdk.createClient({
-            baseUrl: matrixServerAddress,
+            baseUrl: MATRIX_SERVER_ADDRESS,
             accessToken: data.access_token,
             userId: data.user_id
           })
         })
       }).catch(err => {
-        console.log("registration error", err)
+        console.log("Registration error", err)
       })
     })
   }
@@ -61,14 +96,6 @@ class ChatBox extends React.Component {
   componentDidUpdate(prevProps, prevState) {
     if (prevState.client !== this.state.client) {
       this.state.client.startClient()
-      this.state.client.createRoom({
-        room_alias_name: `private-support-chat-${uuid()}`,
-        invite: ["@anonymouscat:rhok.space"], // TODO: create bot user to add
-        visibility: 'private',
-        name: 'Support Chat'
-      }).then(data => {
-        this.setState({ room_id: data.room_id })
-      })
 
       this.state.client.once('sync', (state, prevState, res) => {
         if (state === "PREPARED") {
@@ -86,22 +113,23 @@ class ChatBox extends React.Component {
     }
   }
 
+  componentWillUnmount() {
+    this.leaveRoom();
+  }
+
   handleInputChange = e => {
     this.setState({ inputValue: e.currentTarget.value })
   }
 
   handleSubmit = e => {
     e.preventDefault()
-    const content = {
-      "body": this.state.inputValue,
-      "msgtype": "m.text"
-    };
+    if (!Boolean(this.state.inputValue)) return null;
 
-    this.state.client.sendEvent(this.state.room_id, "m.room.message", content, "").then((res) => {
-      this.setState({ inputValue: "" })
-    }).catch((err) => {
-      console.log(err);
-    })
+    if (!this.state.room_id) {
+      return this.createRoom().then(this.sendMessage)
+    }
+
+    this.sendMessage()
   }
 
   render() {
@@ -109,7 +137,7 @@ class ChatBox extends React.Component {
 
     if (!ready) {
       return (
-        <div>loading...</div>
+        <div className="loader">loading...</div>
       )
     }
 
@@ -126,8 +154,14 @@ class ChatBox extends React.Component {
         </div>
         <div className="input-window">
           <form onSubmit={this.handleSubmit}>
-            <input type="text" onChange={this.handleInputChange} value={inputValue} autoFocus={true} />
-            <input type="submit" />
+            <input
+              type="text"
+              onChange={this.handleInputChange}
+              value={inputValue}
+              autoFocus={true}
+              ref={this.chatboxInput}
+            />
+            <input type="submit" value="Send" />
           </form>
         </div>
       </div>
