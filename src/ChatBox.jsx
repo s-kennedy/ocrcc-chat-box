@@ -7,7 +7,6 @@ import Message from "./Message";
 
 import "./chat.scss"
 
-const roomId = "!vquwDpVBtSwaezcdhG:rhok.space"
 const matrixServerAddress = "https://matrix.rhok.space"
 
 

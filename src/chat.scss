@@ -1,14 +1,23 @@
 @import url('https://fonts.googleapis.com/css?family=Assistant&display=swap');
 
+$light-color: #FFF8F0;
+$dark-color: #22333B;
+$yellow: #FFFACD;
+$teal: #008080;
+$white: #ffffff;
+$highlight-color: $yellow;
+
 
 #ocrcc-chatbox {
   font-family: 'Assistant', 'Helvetica', sans-serif;
   display: flex;
   flex-direction: column;
   min-height: 50vh;
+  outline: 2px solid $teal;
+  outline-offset: -2px;
 
   .message-window {
-    background-color: #313D5A;
+    background-color: $white;
     flex: 1 0 auto;
     padding: 0.5rem;
   }
@@ -16,7 +25,7 @@
   .message {
     .sender {
       font-weight: bold;
-      color: darkslategray;
+      color: $teal;
     }
 
     .text {
@@ -31,7 +40,8 @@
       justify-content: flex-end;
 
       .text {
-        background-color: #FCE57D;
+        background-color: $dark-color;
+        color: $white;
         border-radius: 15px 15px 0 15px;
         margin-left: 10%;
       }
@@ -42,7 +52,8 @@
       justify-content: flex-start;
 
       .text {
-        background-color: #FFF8F0;
+        background-color: $highlight-color;
+        color: $dark-color;
         border-radius: 15px 15px 15px 0;
         margin-right: 10%;
       }
@@ -64,21 +75,22 @@
       border: none;
       flex: 1 0 auto;
       border: none;
-      outline: 2px solid #51A3A3;
+      outline: 2px solid $teal;
       outline-offset: -2px;
+      color: $dark-color;
 
       &:focus {
         border: none;
-        /*outline: 2px solid #51A3A3;*/
+        /*outline: 2px solid $teal;*/
       }
     }
 
     input[type="submit"] {
-      background-color: #51A3A3;
+      background-color: $teal;
       height: 100%;
       padding: 1em;
       font-size: 1rem;
-      color: #fff;
+      color: $white;
       font-weight: bold;
       border: none;
     }
