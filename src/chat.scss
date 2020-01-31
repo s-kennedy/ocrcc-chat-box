@@ -1,0 +1,86 @@
+@import url('https://fonts.googleapis.com/css?family=Assistant&display=swap');
+
+
+#ocrcc-chatbox {
+  font-family: 'Assistant', 'Helvetica', sans-serif;
+  display: flex;
+  flex-direction: column;
+  min-height: 50vh;
+
+  .message-window {
+    background-color: #313D5A;
+    flex: 1 0 auto;
+    padding: 0.5rem;
+  }
+
+  .message {
+    .sender {
+      font-weight: bold;
+      color: darkslategray;
+    }
+
+    .text {
+      padding: 0.5rem 0.75rem;
+      margin-top: 0.5rem;
+      margin-bottom: 0.5rem;
+      width: fit-content;
+    }
+
+    &.from-me {
+      display: flex;
+      justify-content: flex-end;
+
+      .text {
+        background-color: #FCE57D;
+        border-radius: 15px 15px 0 15px;
+        margin-left: 10%;
+      }
+    }
+
+    &.from-support {
+      display: flex;
+      justify-content: flex-start;
+
+      .text {
+        background-color: #FFF8F0;
+        border-radius: 15px 15px 15px 0;
+        margin-right: 10%;
+      }
+    }
+  }
+
+  .input-window {
+    flex: 0 0 auto;
+
+    form {
+      display: flex;
+      align-items: center;
+      margin-bottom: 0;
+    }
+
+    input[type="text"] {
+      font-size: 1rem;
+      padding: 1rem;
+      border: none;
+      flex: 1 0 auto;
+      border: none;
+      outline: 2px solid #51A3A3;
+      outline-offset: -2px;
+
+      &:focus {
+        border: none;
+        /*outline: 2px solid #51A3A3;*/
+      }
+    }
+
+    input[type="submit"] {
+      background-color: #51A3A3;
+      height: 100%;
+      padding: 1em;
+      font-size: 1rem;
+      color: #fff;
+      font-weight: bold;
+      border: none;
+    }
+  }
+}
